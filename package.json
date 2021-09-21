@@ -2,10 +2,10 @@
 	"name": "truck-app",
 	"version": "1.0.0",
 	"description": "Is an app help to truck your progress for training ",
-	"main": "App.js",
+	"main": "index.js",
 	"scripts": {
-		"start": "node server/App.js",
-		"server": "nodemon server/App.js",
+		"start": "node server/index.js",
+		"server": "nodemon server/index.js",
 		"client": "npm start --prefix client",
 		"dev": "concurrently \"npm run server\" \"npm run client\"",
 		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"

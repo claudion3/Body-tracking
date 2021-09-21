@@ -8,6 +8,7 @@ const cors = require('cors');
 
 connectDB();
 const app = express();
+const PORT = process.env.API_PORT || 5000;
 
 app.use(bodyParser.json());
 app.use('/bodyTruck', BodyTruckRoutes);
@@ -19,5 +20,4 @@ if (process.env.NODE_ENV === 'production') {
 	});
 }
 
-const PORT = process.env.API_PORT || 5000;
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

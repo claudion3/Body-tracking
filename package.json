@@ -2,6 +2,9 @@
 	"name": "truck-app",
 	"version": "1.0.0",
 	"description": "Is an app help to truck your progress for training ",
+	"engines": {
+		"node": "14.17.0"
+	},
 	"main": "index.js",
 	"scripts": {
 		"start": "node server/index.js",

@@ -2,7 +2,7 @@
 	margin: 35px 10px 0px;
 }
 
-.edit-delete > button {
+button {
 	margin: 10px 25px;
 	width: 130px;
 	background-color: transparent;
@@ -14,7 +14,7 @@
 	box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.1), -7px -7px 20px rgb(242, 255, 241);
 	border: unset;
 }
-.edit-delete > button:hover {
+button:hover {
 	cursor: pointer;
 	color: #292929;
 	box-shadow: inset 3px 3px 5px rgba(0, 0, 0, 0.1),

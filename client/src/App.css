@@ -10,6 +10,22 @@
 	margin: 0;
 }
 
+.input-chart {
+	display: flex;
+	justify-content: space-around;
+	padding: 13px;
+	flex-wrap: wrap;
+}
+
+.chart {
+	min-width: 90px;
+	box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.1),
+		-7px -7px 20px rgba(241, 255, 255, 1);
+}
+.chart > canvas {
+	padding: 10px;
+}
+
 .form {
 	padding: 30px;
 	min-width: 90px;
@@ -73,10 +89,16 @@
 	font-style: italic;
 	color: #b60000;
 }
-@media (max-width: 960px) {
+@media (max-width: 860px) {
 	.timeline-container {
 		display: flex;
 		width: 100%;
+	}
+	.input {
+		margin: 10px;
+	}
+	.chart {
+		margin: 10px;
 	}
 }
 
@@ -84,5 +106,10 @@
 	.timeline-container {
 		display: flex;
 		width: 100%;
+	}
+
+	.input,
+	.chart {
+		margin: 13px auto;
 	}
 }

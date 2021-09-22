@@ -5,6 +5,8 @@ import {
 	VerticalTimelineElement,
 } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
+import { Link } from 'react-scroll';
+
 const Measurements = ({ data, removeTruck, editTruck }) => {
 	const date = new Date(data.date).toLocaleDateString();
 
@@ -24,9 +26,11 @@ const Measurements = ({ data, removeTruck, editTruck }) => {
 					Hip Width {data.hipWidth} cm
 				</p>
 				<div className='edit-delete'>
-					<button className='edit' onClick={() => editTruck(data)}>
-						<i class='fas fa-edit'></i>
-					</button>
+					<Link to='edit' smooth={true} duration={1000}>
+						<button className='edit' onClick={() => editTruck(data)}>
+							<i class='fas fa-edit'></i>
+						</button>
+					</Link>
 
 					<button className='delete' onClick={() => removeTruck(data._id)}>
 						<i className='fas fa-trash'></i>

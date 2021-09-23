@@ -57,8 +57,9 @@ const InputField = forwardRef((props, ref) => {
 
 	return (
 		<div className='input-wrapper'>
-			{props.label && <label>{props.label}</label>}
+			{props.label && <label data-testid='label'>{props.label}</label>}
 			<input
+				data-testid='input'
 				placeholder={props.placeholder}
 				name={props.name}
 				onChange={event => handleChange(event)}
@@ -66,7 +67,11 @@ const InputField = forwardRef((props, ref) => {
 				value={props.value ? props.value : value}
 				autoComplete={props.autoComplete}
 			/>
-			{error && <p className='error'>{error}</p>}
+			{error && (
+				<p className='error' data-testid='error'>
+					{error}
+				</p>
+			)}
 		</div>
 	);
 });

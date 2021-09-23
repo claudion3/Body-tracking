@@ -17,4 +17,5 @@
 | `npm run client` | Runs the client application.                                                                                                   |
 | `npm run server` | Runs the server and serves it via Nodemon, meaning that the server will automatically be restarted when you make code changes. |
 | `npm run dev`    | Runs `client` and `server` concurrently. _This is generally the command you run for development_.                              |
-# Body-trucking
+
+| `npm run test` | Runs `client test` |

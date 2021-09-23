@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputField component Matches snapshot 1`] = `
+<div
+  className="input-wrapper"
+>
+  <input
+    autoComplete="off"
+    data-testid="input"
+    name=""
+    onChange={[Function]}
+    placeholder=""
+    type="number"
+    value=""
+  />
+  
+</div>
+`;

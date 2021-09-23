@@ -6,7 +6,7 @@ import {
 	editTruck,
 	deleteTruck,
 } from './redux/actions/BodyTruckActions';
-import Measurements from './components/Measurements';
+import Timeline from './components/Timeline';
 import './App.css';
 import Navbar from './components/Navbar';
 import InputField from './components/InputField';
@@ -90,10 +90,10 @@ const App = () => {
 
 	return (
 		<div className='app'>
-			<Navbar />
-			<div className='input-chart'>
+			<Navbar title='Truck App' />
+			<div className='input-chart' id='edit'>
 				<div className='input'>
-					<form onSubmit={submitForm} className='form' id='edit'>
+					<form onSubmit={submitForm} className='form'>
 						<h1>Enter New Truck</h1>
 						<InputField
 							ref={inputRefs.current[0]}
@@ -173,7 +173,7 @@ const App = () => {
 				<div className='timeline-container'>
 					{bodyTruck.length > 0 &&
 						bodyTruck.map((data, idx) => (
-							<Measurements
+							<Timeline
 								data={data}
 								key={idx}
 								removeTruck={removeHandler}

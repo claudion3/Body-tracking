@@ -2,11 +2,11 @@ import React from 'react';
 
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ title }) => {
 	return (
-		<nav className='navbar'>
+		<nav className='navbar' data-testid='navbar'>
 			<div className='navbar_logo'>
-				<h2>Truck App</h2>
+				<h2>{title}</h2>
 			</div>
 			<div className='hamburger_menu'>
 				<div></div>

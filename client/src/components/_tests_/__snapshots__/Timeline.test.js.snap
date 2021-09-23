@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Navbar component Matches snapshot 1`] = `
+<div
+  className="vertical-timeline vertical-timeline--animate vertical-timeline--two-columns"
+>
+  <div
+    className="vertical-timeline-element"
+    id=""
+    style={null}
+  >
+    <span
+      className="vertical-timeline-element-icon is-hidden"
+      onClick={null}
+      style={
+        Object {
+          "background": "rgb(16, 204, 82)",
+          "color": "#fff",
+        }
+      }
+    />
+    <div
+      className="vertical-timeline-element-content is-hidden"
+      onClick={null}
+      style={
+        Object {
+          "background": " #E9E6EA",
+          "color": "#000",
+        }
+      }
+    >
+      <div
+        className="vertical-timeline-element-content-arrow"
+        style={
+          Object {
+            "borderRight": "7px solid  rgb(233,230,234)",
+          }
+        }
+      />
+      <h3
+        className="vertical-timeline-element-title"
+      >
+        Body Truck Data
+      </h3>
+      <p
+        className="vertical-timeline-element-subtitle"
+      >
+        Weight 
+         Kg
+      </p>
+      <p
+        className="vertical-timeline-element-subtitle"
+      >
+        Hip Width 
+         cm
+      </p>
+      <div
+        className="edit-delete"
+      >
+        <a
+          onClick={[Function]}
+        >
+          <button
+            className="edit"
+            onClick={[Function]}
+          >
+            <i
+              class="fas fa-edit"
+            />
+          </button>
+        </a>
+        <button
+          className="delete"
+          onClick={[Function]}
+        >
+          <i
+            className="fas fa-trash"
+          />
+        </button>
+      </div>
+      <span
+        className="vertical-timeline-element-date"
+      >
+        Invalid Date
+      </span>
+    </div>
+  </div>
+</div>
+`;

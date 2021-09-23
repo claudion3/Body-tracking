@@ -1,5 +1,5 @@
 import React from 'react';
-import './Measurements.css';
+import './Timeline.css';
 import {
 	VerticalTimeline,
 	VerticalTimelineElement,
@@ -7,11 +7,11 @@ import {
 import 'react-vertical-timeline-component/style.min.css';
 import { Link } from 'react-scroll';
 
-const Measurements = ({ data, removeTruck, editTruck }) => {
+const Timeline = ({ data, removeTruck, editTruck }) => {
 	const date = new Date(data.date).toLocaleDateString();
 
 	return (
-		<VerticalTimeline>
+		<VerticalTimeline data-testid='timeline'>
 			<VerticalTimelineElement
 				contentStyle={{ background: ' #E9E6EA', color: '#000' }}
 				contentArrowStyle={{ borderRight: '7px solid  rgb(233,230,234)' }}
@@ -41,4 +41,4 @@ const Measurements = ({ data, removeTruck, editTruck }) => {
 	);
 };
 
-export default Measurements;
+export default Timeline;

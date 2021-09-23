@@ -21,6 +21,12 @@ const InputField = forwardRef((props, ref) => {
 					if (!value) {
 						setError('This field is required');
 						return false;
+					} else if (value < 0) {
+						setError('Negative number are not allowed');
+						return false;
+					} else if (value < 20 && value > 0) {
+						setError('Invalid input try high number');
+						return false;
 					}
 				}
 
@@ -40,6 +46,7 @@ const InputField = forwardRef((props, ref) => {
 							return false;
 						}
 						break;
+
 					default:
 						break;
 				}

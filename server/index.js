@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
-const BodyTruckRoutes = require('./routes/bodyTruckRoutes');
+const BodyTrackRoutes = require('./routes/bodyTrackRoutes');
 const cors = require('cors');
 
 connectDB();
@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
-app.use('/bodyTruck', BodyTruckRoutes);
+app.use('/bodyTrack', BodyTrackRoutes);
 app.use(cors());
 
 if (process.env.NODE_ENV === 'production') {

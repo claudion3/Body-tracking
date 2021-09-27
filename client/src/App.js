@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, createRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-	getAllTruck as truckList,
-	createTruck,
-	editTruck,
-	deleteTruck,
-} from './redux/actions/BodyTruckActions';
+	getAllTrack as trackList,
+	createTrack,
+	editTrack,
+	deleteTrack,
+} from './redux/actions/BodyTrackActions';
 import Timeline from './components/Timeline';
 import './App.css';
 import Navbar from './components/Navbar';
@@ -17,26 +17,26 @@ const App = () => {
 
 	const inputRefs = useRef([createRef(), createRef(), createRef()]);
 
-	const getAllTruckList = useSelector(state => state.getAllTruck);
-	const { bodyTruck, loading, error } = getAllTruckList;
+	const getAllTrackList = useSelector(state => state.getAllTrack);
+	const { bodyTrack, loading, error } = getAllTrackList;
 
-	const [truckData, setTruckData] = useState({});
-	const [truckWeight, setTruckWeight] = useState([]);
-	const [truckHipWidth, setTruckHipWidth] = useState([]);
+	const [trackData, setTrackData] = useState({});
+	const [trackWeight, setTrackWeight] = useState([]);
+	const [trackHipWidth, setTrackHipWidth] = useState([]);
 
 	useEffect(() => {
-		dispatch(truckList());
+		dispatch(trackList());
 	}, [dispatch]);
 
 	useEffect(() => {
-		if (bodyTruck && bodyTruck.length > 0) {
-			const dataWeight = bodyTruck.map(data => data.weight);
-			const dataHipWidth = bodyTruck.map(data => data.hipWidth);
+		if (bodyTrack && bodyTrack.length > 0) {
+			const dataWeight = bodyTrack.map(data => data.weight);
+			const dataHipWidth = bodyTrack.map(data => data.hipWidth);
 
-			setTruckWeight(dataWeight);
-			setTruckHipWidth(dataHipWidth);
+			setTrackWeight(dataWeight);
+			setTrackHipWidth(dataHipWidth);
 		}
-	}, [bodyTruck]);
+	}, [bodyTrack]);
 
 	const refreshPage = () => {
 		setTimeout(() => {
@@ -44,17 +44,17 @@ const App = () => {
 		}, 100);
 	};
 	const removeHandler = id => {
-		dispatch(deleteTruck(id));
+		dispatch(deleteTrack(id));
 
 		refreshPage();
 	};
 
 	const editHandler = editData => {
-		setTruckData(editData);
+		setTrackData(editData);
 	};
 
 	const handleChange = (name, value) => {
-		setTruckData(prev => ({ ...prev, [name]: value }));
+		setTrackData(prev => ({ ...prev, [name]: value }));
 	};
 
 	const submitForm = e => {
@@ -74,10 +74,10 @@ const App = () => {
 			return;
 		}
 
-		if (truckData._id) {
-			dispatch(editTruck(truckData));
+		if (trackData._id) {
+			dispatch(editTrack(trackData));
 		} else {
-			dispatch(createTruck(truckData));
+			dispatch(createTrack(trackData));
 		}
 
 		//Reset the form
@@ -90,17 +90,17 @@ const App = () => {
 
 	return (
 		<div className='app'>
-			<Navbar title='Truck App' />
+			<Navbar title='Tracking App' />
 			<div className='input-chart' id='edit'>
 				<div className='input'>
 					<form onSubmit={submitForm} className='form'>
-						<h1>Enter New Truck</h1>
+						<h1>Enter New Measurement</h1>
 						<InputField
 							ref={inputRefs.current[0]}
 							name='date'
 							label='Date*:'
 							type='date'
-							value={truckData.date}
+							value={trackData.date}
 							onChange={handleChange}
 							validation={'required|min:8'}
 						/>
@@ -109,7 +109,7 @@ const App = () => {
 							name='weight'
 							placeholder='Enter your weight...'
 							label='Weight*:'
-							value={truckData.weight}
+							value={trackData.weight}
 							onChange={handleChange}
 							validation={'required|min:2|max:3'}
 						/>
@@ -118,7 +118,7 @@ const App = () => {
 							name='hipWidth'
 							placeholder='Enter your Hip Width...'
 							label='Hip Width*:'
-							value={truckData.hipWidth}
+							value={trackData.hipWidth}
 							validation='required|min:2|max:3'
 							onChange={handleChange}
 						/>
@@ -144,7 +144,7 @@ const App = () => {
 							datasets: [
 								{
 									label: 'My Weight',
-									data: truckWeight,
+									data: trackWeight,
 									fill: false,
 									borderColor: 'rgb(75, 192, 192)',
 									tension: 0.1,
@@ -152,7 +152,7 @@ const App = () => {
 								{
 									label: 'Hip Width',
 
-									data: truckHipWidth,
+									data: trackHipWidth,
 									fill: false,
 									borderColor: 'rgb(128,196,127)',
 									tension: 0.1,
@@ -171,13 +171,13 @@ const App = () => {
 				<h2>{error}</h2>
 			) : (
 				<div className='timeline-container'>
-					{bodyTruck.length > 0 &&
-						bodyTruck.map((data, idx) => (
+					{bodyTrack.length > 0 &&
+						bodyTrack.map((data, idx) => (
 							<Timeline
 								data={data}
 								key={idx}
-								removeTruck={removeHandler}
-								editTruck={editHandler}
+								removeTrack={removeHandler}
+								editTrack={editHandler}
 							/>
 						))}
 				</div>

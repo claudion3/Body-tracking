@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const BodyTruckSchema = new mongoose.Schema({
+const BodyTrackSchema = new mongoose.Schema({
 	date: { type: Date, required: true },
 	weight: { type: Number, required: true },
 	hipWidth: { type: Number, required: true },
 });
-const BodyTruck = mongoose.model('bodyTruck', BodyTruckSchema);
+const BodyTrack = mongoose.model('bodyTrack', BodyTrackSchema);
 
-module.exports = BodyTruck;
+module.exports = BodyTrack;

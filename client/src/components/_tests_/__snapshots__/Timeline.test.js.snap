@@ -40,7 +40,7 @@ exports[`Navbar component Matches snapshot 1`] = `
       <h3
         className="vertical-timeline-element-title"
       >
-        Body Truck Data
+        Body Tracking Data
       </h3>
       <p
         className="vertical-timeline-element-subtitle"

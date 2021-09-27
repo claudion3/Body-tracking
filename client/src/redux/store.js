@@ -2,16 +2,16 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import {
-	getBodyTruck,
-	createTruck,
-	deleteTruck,
-	updateTruck,
-} from './reducers/bodyTruckReducer';
+	getBodyTrack,
+	createTrack,
+	deleteTrack,
+	updateTrack,
+} from './reducers/bodyTrackReducer';
 const reducer = combineReducers({
-	getAllTruck: getBodyTruck,
-	createBdTruck: createTruck,
-	editBdTruck: updateTruck,
-	deleteBdTruck: deleteTruck,
+	getAllTrack: getBodyTrack,
+	createBdTrack: createTrack,
+	editBdTrack: updateTrack,
+	deleteBdTrack: deleteTrack,
 });
 
 const middleware = [thunk];

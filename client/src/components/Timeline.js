@@ -7,7 +7,7 @@ import {
 import 'react-vertical-timeline-component/style.min.css';
 import { Link } from 'react-scroll';
 
-const Timeline = ({ data, removeTruck, editTruck }) => {
+const Timeline = ({ data, removeTruck, editTrack }) => {
 	const date = new Date(data.date).toLocaleDateString();
 
 	return (
@@ -17,7 +17,7 @@ const Timeline = ({ data, removeTruck, editTruck }) => {
 				contentArrowStyle={{ borderRight: '7px solid  rgb(233,230,234)' }}
 				date={date}
 				iconStyle={{ background: 'rgb(16, 204, 82)', color: '#fff' }}>
-				<h3 className='vertical-timeline-element-title'>Body Truck Data</h3>
+				<h3 className='vertical-timeline-element-title'>Body Tracking Data</h3>
 
 				<p className='vertical-timeline-element-subtitle'>
 					Weight {data.weight} Kg
@@ -27,7 +27,7 @@ const Timeline = ({ data, removeTruck, editTruck }) => {
 				</p>
 				<div className='edit-delete'>
 					<Link to='edit' smooth={true} duration={1000}>
-						<button className='edit' onClick={() => editTruck(data)}>
+						<button className='edit' onClick={() => editTrack(data)}>
 							<i class='fas fa-edit'></i>
 						</button>
 					</Link>

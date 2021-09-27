@@ -1,19 +1,19 @@
 const ObjectID = require('mongoose').Types.ObjectId;
-const BodyTruck = require('../models/bodyTruck');
+const BodyTrack = require('../models/bodyTrack');
 
-const getAllTruck = async (req, res) => {
+const getAllTrack = async (req, res) => {
 	try {
-		const bodyTruck = await BodyTruck.find({});
-		res.json(bodyTruck);
+		const bodyTrack = await BodyTrack.find({});
+		res.json(bodyTrack);
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({ message: 'server error' });
 	}
 };
 
-const postNewTruck = async (req, res) => {
+const postNewTrack = async (req, res) => {
 	try {
-		let newRecord = new BodyTruck({
+		let newRecord = new BodyTrack({
 			date: req.body.date,
 			weight: req.body.weight,
 			hipWidth: req.body.hipWidth,
@@ -32,7 +32,7 @@ const postNewTruck = async (req, res) => {
 		res.status(500).json({ message: 'server error' });
 	}
 };
-const updateTruck = async (req, res) => {
+const updateTrack = async (req, res) => {
 	try {
 		if (!ObjectID.isValid(req.params.id))
 			return res.status(400).send('No record with given id : ' + req.params.id);
@@ -43,7 +43,7 @@ const updateTruck = async (req, res) => {
 			hipWidth: req.body.hipWidth,
 		};
 
-		BodyTruck.findByIdAndUpdate(
+		BodyTrack.findByIdAndUpdate(
 			req.params.id,
 			{ $set: updatedRecord },
 			{ new: true },
@@ -61,12 +61,12 @@ const updateTruck = async (req, res) => {
 		res.status(500).json({ message: 'server error' });
 	}
 };
-const deleteTruck = async (req, res) => {
+const deleteTrack = async (req, res) => {
 	try {
 		if (!ObjectID.isValid(req.params.id))
 			return res.status(400).send('No record with given id : ' + req.params.id);
 
-		BodyTruck.findByIdAndRemove(req.params.id, (err, docs) => {
+		BodyTrack.findByIdAndRemove(req.params.id, (err, docs) => {
 			if (!err) res.send(docs);
 			else
 				console.log(
@@ -80,4 +80,4 @@ const deleteTruck = async (req, res) => {
 	}
 };
 
-module.exports = { getAllTruck, postNewTruck, updateTruck, deleteTruck };
+module.exports = { getAllTrack, postNewTrack, updateTrack, deleteTrack };

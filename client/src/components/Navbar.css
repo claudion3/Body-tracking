@@ -20,20 +20,6 @@
 	cursor: pointer;
 }
 
-.cartLogo_badge {
-	width: 30px;
-	height: 30px;
-	background: #f4f4f4;
-	border-radius: 50%;
-	margin-left: 8px;
-	color: #171717;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	font-size: 1rem;
-}
-
 .hamburger_menu {
 	width: 30px;
 	height: 30px;

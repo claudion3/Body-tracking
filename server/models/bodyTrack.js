@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const BodyTrackSchema = new mongoose.Schema(
 	{
 		date: { type: Date, required: true },
@@ -9,7 +8,7 @@ const BodyTrackSchema = new mongoose.Schema(
 	},
 	{
 		strict: true,
-		strictQuery: false, // Turn off strict mode for query filters
+		strictQuery: true, // Turn on strict mode for query filters
 	},
 );
 const BodyTrack = mongoose.model('bodyTrack', BodyTrackSchema);

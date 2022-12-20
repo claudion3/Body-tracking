@@ -1,9 +1,9 @@
 const ObjectID = require('mongoose').Types.ObjectId;
-const BodyTrack = require('../models/bodyTrack');
+const newBodyTrack = require('../models/bodyTrack');
 
 const getAllTrack = async (req, res) => {
 	try {
-		const bodyTrack = await BodyTrack.find({});
+		const bodyTrack = await newBodyTrack.find({});
 		res.json(bodyTrack);
 	} catch (error) {
 		console.log(error);
@@ -13,7 +13,7 @@ const getAllTrack = async (req, res) => {
 
 const postNewTrack = async (req, res) => {
 	try {
-		let newRecord = new BodyTrack({
+		let newRecord = new newBodyTrack({
 			date: req.body.date,
 			weight: req.body.weight,
 			hipWidth: req.body.hipWidth,

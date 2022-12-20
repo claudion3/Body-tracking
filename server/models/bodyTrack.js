@@ -13,4 +13,8 @@ const BodyTrackSchema = new mongoose.Schema(
 );
 const BodyTrack = mongoose.model('bodyTrack', BodyTrackSchema);
 
-module.exports = BodyTrack;
+const newBodyTrack = new BodyTrack();
+newBodyTrack.set('iAmNotInTheSchema', true);
+newBodyTrack.save(); // iAmNotInTheSchema is not saved to the db
+
+module.exports = newBodyTrack;

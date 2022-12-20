@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', true);
 
 const connectDB = async () => {
 	try {
@@ -10,7 +10,7 @@ const connectDB = async () => {
 		});
 		console.log('MongoDB connection SUCCESS');
 	} catch (error) {
-		console.log('MongoDB connection FAIL');
+		console.log('MongoDB connection FAIL',error);
 		process.exit(1);
 	}
 };

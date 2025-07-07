@@ -58,3 +58,86 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.status(500).send({ error: 'Error logging in' });
   }
 };
+
+// In your userController.ts
+export const getUserProfile = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.userId).select('-password');
+    if (!user) {
+      return res.status(404).send({ error: 'User not found' });
+    }
+    res.send(user);
+  } catch (err) {
+    res.status(500).send({ error: 'Error fetching user profile' });
+  }
+};
+
+export const updateUserProfile = async (req: Request, res: Response) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = [
+    'username',
+    'email',
+    'fullName',
+    'age',
+    'gender',
+    'height',
+    'weight',
+    'goalWeight',
+    'activityLevel',
+    'avatarUrl'
+  ];
+  
+  const isValidOperation = updates.every(update => allowedUpdates.includes(update));
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: 'Invalid updates!' });
+  }
+
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).send({ error: 'User not found' });
+    }
+
+    updates.forEach(update => {
+      // Use type assertion for dynamic property access
+      (user as any)[update] = req.body[update];
+    });
+    
+    await user.save();
+    res.send(user);
+  } catch (err) {
+    res.status(400).send({ error: 'Error updating profile' });
+  }
+};
+
+export const changePassword = async (req: Request, res: Response) => {
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).send({ error: 'User not found' });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).send({ error: 'Old password is incorrect' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+    res.send({ message: 'Password updated successfully' });
+  } catch (err) {
+    res.status(500).send({ error: 'Error changing password' });
+  }
+};
+
+export const deleteAccount = async (req: Request, res: Response) => {
+  try {
+    await User.findByIdAndDelete(req.userId);
+    res.send({ message: 'Account deleted successfully' });
+  } catch (err) {
+    res.status(500).send({ error: 'Error deleting account' });
+  }
+};

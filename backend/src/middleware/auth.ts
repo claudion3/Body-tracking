@@ -16,7 +16,7 @@ const auth = (req: AuthRequest, res: Response, next: NextFunction): void => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'MY_SECRET_KEY_MY_SECRET_KEY_MY_SECRET_KEY') as { userId: string };
-    req.user = { userId: decoded.userId }; // Attach user data to request
+    req.user = { userId: decoded.userId };
     next(); // Call next middleware
   } catch (err) {
     res.status(400).send({ error: 'Invalid token.' });

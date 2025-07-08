@@ -1,17 +1,33 @@
 import { Request, Response } from 'express';
 import ProgressEntry from '../models/ProgressEntry';
+import User from '../models/User';
 
-// Extend Request to include user
 interface AuthRequest extends Request {
   user?: { userId: string };
 }
 
-export const addProgressEntry = async (req: AuthRequest, res: Response): Promise<void> => {
-  const { weight, hipSize, waistSize } = req.body;
+const isValidMeasurement = (weight: any, hipSize: any, waistSize: any): boolean => {
+  return (
+      typeof weight === 'number' &&
+      typeof hipSize === 'number' &&
+      typeof waistSize === 'number' &&
+      weight > 0 &&
+      hipSize > 0 &&
+      waistSize > 0
+  );
+};
 
+export const addProgressEntry = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     if (!req.user) {
-      res.status(401).send({ error: 'User not authenticated' });
+      res.status(401).json({ error: 'Unauthorized: User not authenticated' });
+      return;
+    }
+
+    const { weight, hipSize, waistSize } = req.body;
+
+    if (!isValidMeasurement(weight, hipSize, waistSize)) {
+      res.status(400).json({ error: 'Invalid input: All values must be positive numbers' });
       return;
     }
 
@@ -23,22 +39,40 @@ export const addProgressEntry = async (req: AuthRequest, res: Response): Promise
     });
 
     await progressEntry.save();
-    res.status(201).send(progressEntry);
+
+    const updatedUser = await User.findByIdAndUpdate(
+        req.user.userId,
+        {
+          weight,
+          hipSize,
+          waistSize,
+          lastLoginAt: new Date(), // optional
+        },
+        { new: true }
+    ).select('-password'); // remove sensitive fields
+
+    res.status(201).json({
+      message: 'Progress entry added successfully',
+      progressEntry,
+      updatedProfile: updatedUser,
+    });
   } catch (err) {
-    res.status(400).send({ error: 'Error saving progress entry' });
+    console.error('Error in addProgressEntry:', err);
+    res.status(500).json({ error: 'Server error while saving progress entry' });
   }
 };
 
 export const getProgressEntries = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     if (!req.user) {
-      res.status(401).send({ error: 'User not authenticated' });
+      res.status(401).json({ error: 'Unauthorized: User not authenticated' });
       return;
     }
 
-    const entries = await ProgressEntry.find({ userId: req.user.userId });
-    res.send(entries);
+    const entries = await ProgressEntry.find({ userId: req.user.userId }).sort({ date: -1 });
+    res.status(200).json(entries);
   } catch (err) {
-    res.status(500).send({ error: 'Error fetching progress entries' });
+    console.error('Error in getProgressEntries:', err);
+    res.status(500).json({ error: 'Server error while fetching progress entries' });
   }
 };

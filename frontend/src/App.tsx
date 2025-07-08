@@ -5,7 +5,6 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import Profile from './pages/Profile';
 import Dashboard from './pages/Dashboard';
-import ProgressForm from './components/ProgressForm';
 
 const App: React.FC = () => {
   return (
@@ -16,7 +15,6 @@ const App: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/progress" element={<ProgressForm />} />
       </Routes>
     </Router>
   );

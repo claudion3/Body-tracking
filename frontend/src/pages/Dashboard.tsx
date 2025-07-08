@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProgressChart from '../components/ProgressChart';
 import MeasurementForm from '../components/ProgressForm';
-import Header from '../components/Header';
+import Header from '../components/shared/Header.tsx';
+import StatCard from '../components/shared/StatCard';
+import Modal from '../components/shared/Modal';
+
 
 interface ProgressEntry {
   date: string;
@@ -22,7 +25,6 @@ const Dashboard: React.FC = () => {
     setError(null);
     try {
       const token = localStorage.getItem('token');
-      if (!token) throw new Error('Authentication required');
       const response = await axios.get('/api/progress', {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -124,26 +126,18 @@ const Dashboard: React.FC = () => {
               },
               { label: 'Entries Logged', value: entries.length.toString() },
             ].map((stat, idx) => (
-              <div
-                key={idx}
-                className="bg-gray-900/60 p-4 rounded-lg border border-gray-700"
-              >
-                <p className="text-gray-400">{stat.label}</p>
-                <p className="text-2xl font-bold">{stat.value}</p>
-              </div>
+              <StatCard key={idx} label={stat.label} value={stat.value} />
             ))}
           </div>
         </div>
 
         {showForm && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-xl p-6 w-full max-w-md border border-gray-700">
-              <MeasurementForm
-                onSuccess={handleNewMeasurementSuccess}
-                onCancel={() => setShowForm(false)}
-              />
-            </div>
-          </div>
+          <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Add Measurement">
+            <MeasurementForm
+              onSuccess={handleNewMeasurementSuccess}
+              onCancel={() => setShowForm(false)}
+            />
+          </Modal>
         )}
 
         {isEmpty ? (

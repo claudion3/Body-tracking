@@ -2,27 +2,28 @@ import { Request, Response } from 'express';
 import User from '../models/User';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import { AuthenticatedRequest } from '../utils/express.d';
+import { IUser } from '../utils/types';
 
-// Ensure explicit return type as Promise<void>
+// Signup controller
 export const signup = async (req: Request, res: Response): Promise<void> => {
   const { username, email, password } = req.body;
 
   try {
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       res.status(400).send({ error: 'User already exists' });
-      return; // Ensure early return
+      return;
     }
 
-    // Create a new user
     const user = new User({ username, email, password });
     await user.save();
 
-    // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'MY_SECRET_KEY_MY_SECRET_KEY_MY_SECRET_KEY', {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET || 'MY_SECRET_KEY_MY_SECRET_KEY_MY_SECRET_KEY',
+        { expiresIn: '1h' }
+    );
 
     res.status(201).send({ token });
   } catch (err) {
@@ -30,28 +31,28 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+// Login controller
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
   try {
-    // Find user by email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }) as IUser;
     if (!user) {
       res.status(404).send({ error: 'User not found' });
       return;
     }
 
-    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       res.status(401).send({ error: 'Invalid credentials' });
       return;
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'MY_SECRET_KEY_MY_SECRET_KEY_MY_SECRET_KEY', {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET || 'MY_SECRET_KEY_MY_SECRET_KEY_MY_SECRET_KEY',
+        { expiresIn: '1h' }
+    );
 
     res.send({ token });
   } catch (err) {
@@ -59,12 +60,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// In your userController.ts
-export const getUserProfile = async (req: Request, res: Response) => {
+// Get profile
+export const getUserProfile = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    const user = await User.findById(req.userId).select('-password');
+    const user = await User.findById(req.user?.userId).select('-password');
     if (!user) {
-      return res.status(404).send({ error: 'User not found' });
+      res.status(404).send({ error: 'User not found' });
+      return;
     }
     res.send(user);
   } catch (err) {
@@ -72,7 +74,8 @@ export const getUserProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const updateUserProfile = async (req: Request, res: Response) => {
+// Update profile
+export const updateUserProfile = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const updates = Object.keys(req.body);
   const allowedUpdates = [
     'username',
@@ -84,26 +87,26 @@ export const updateUserProfile = async (req: Request, res: Response) => {
     'weight',
     'goalWeight',
     'activityLevel',
-    'avatarUrl'
+    'avatarUrl',
   ];
-  
-  const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
+  const isValidOperation = updates.every(update => allowedUpdates.includes(update));
   if (!isValidOperation) {
-    return res.status(400).send({ error: 'Invalid updates!' });
+    res.status(400).send({ error: 'Invalid updates!' });
+    return;
   }
 
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.user?.userId) as IUser;
     if (!user) {
-      return res.status(404).send({ error: 'User not found' });
+      res.status(404).send({ error: 'User not found' });
+      return;
     }
 
     updates.forEach(update => {
-      // Use type assertion for dynamic property access
       (user as any)[update] = req.body[update];
     });
-    
+
     await user.save();
     res.send(user);
   } catch (err) {
@@ -111,18 +114,21 @@ export const updateUserProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const changePassword = async (req: Request, res: Response) => {
+// Change password
+export const changePassword = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const { oldPassword, newPassword } = req.body;
 
   try {
-    const user = await User.findById(req.userId);
+    const user = await User.findById(req.user?.userId) as IUser;
     if (!user) {
-      return res.status(404).send({ error: 'User not found' });
+      res.status(404).send({ error: 'User not found' });
+      return;
     }
 
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) {
-      return res.status(401).send({ error: 'Old password is incorrect' });
+      res.status(401).send({ error: 'Old password is incorrect' });
+      return;
     }
 
     user.password = newPassword;
@@ -133,9 +139,10 @@ export const changePassword = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteAccount = async (req: Request, res: Response) => {
+// Delete account
+export const deleteAccount = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    await User.findByIdAndDelete(req.userId);
+    await User.findByIdAndDelete(req.user?.userId);
     res.send({ message: 'Account deleted successfully' });
   } catch (err) {
     res.status(500).send({ error: 'Error deleting account' });

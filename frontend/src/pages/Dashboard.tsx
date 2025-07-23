@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ProgressChart from '../components/ProgressChart';
 import MeasurementForm from '../components/ProgressForm';
 import Header from '../components/shared/Header.tsx';
 import StatCard from '../components/shared/StatCard';
 import Modal from '../components/shared/Modal';
-
+import ProgressSection from '../components/ProgressSection.tsx';
 
 interface ProgressEntry {
   date: string;
@@ -14,11 +13,15 @@ interface ProgressEntry {
   waistSize: number;
 }
 
+const INITIAL_VISIBLE = 5;
+const LOAD_MORE_COUNT = 5;
+
 const Dashboard: React.FC = () => {
   const [entries, setEntries] = useState<ProgressEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
 
   const fetchProgressData = async () => {
     setLoading(true);
@@ -29,6 +32,7 @@ const Dashboard: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEntries(response.data || []);
+      setVisibleCount(INITIAL_VISIBLE); // reset visible count on refetch
     } catch (err: any) {
       console.error('Error fetching progress data:', err);
       setError(
@@ -49,6 +53,20 @@ const Dashboard: React.FC = () => {
   const handleNewMeasurementSuccess = () => {
     setShowForm(false);
     fetchProgressData();
+  };
+
+  const isEmpty = entries.length === 0;
+
+  const toggleViewAll = () => {
+    if (visibleCount === INITIAL_VISIBLE) {
+      setVisibleCount(Math.min(entries.length, visibleCount + LOAD_MORE_COUNT));
+    } else {
+      setVisibleCount(INITIAL_VISIBLE);
+    }
+  };
+
+  const loadMore = () => {
+    setVisibleCount((prev) => Math.min(prev + LOAD_MORE_COUNT, entries.length));
   };
 
   if (loading) {
@@ -80,8 +98,6 @@ const Dashboard: React.FC = () => {
       </div>
     );
   }
-
-  const isEmpty = entries.length === 0;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -132,7 +148,11 @@ const Dashboard: React.FC = () => {
         </div>
 
         {showForm && (
-          <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Add Measurement">
+          <Modal
+            isOpen={showForm}
+            onClose={() => setShowForm(false)}
+            title="Add Measurement"
+          >
             <MeasurementForm
               onSuccess={handleNewMeasurementSuccess}
               onCancel={() => setShowForm(false)}
@@ -160,17 +180,21 @@ const Dashboard: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <div className="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
                 <h2 className="text-xl font-bold mb-4">Weight Progress</h2>
-                <ProgressChart
+                <ProgressSection
+                  title="Weight Progress"
                   type="line"
-                  data={entries.map((e) => ({ date: e.date, value: e.weight }))}
-                  colors={['#f97316']}
                   yLabel="kg"
+                  colors={['#f97316']}
+                  data={entries.map((e) => ({ date: e.date, value: e.weight }))}
                 />
               </div>
               <div className="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
                 <h2 className="text-xl font-bold mb-4">Hip & Waist Progress</h2>
-                <ProgressChart
+                <ProgressSection
+                  title="Hip & Waist Progress"
                   type="bar"
+                  yLabel="cm"
+                  colors={['#f97316', '#ef4444']}
                   data={[
                     {
                       name: 'Hip Size',
@@ -187,25 +211,27 @@ const Dashboard: React.FC = () => {
                       })),
                     },
                   ]}
-                  colors={['#f97316', '#ef4444']}
-                  yLabel="cm"
                 />
               </div>
             </div>
 
-            <div className="bg-gray-800/80 rounded-xl border border-gray-700 overflow-hidden">
-              <div className="flex justify-between items-center p-6">
+            {/* Scrollable, expandable list with lazy load */}
+            <div className="bg-gray-800/80 rounded-xl border border-gray-700 overflow-hidden max-h-[400px] flex flex-col">
+              <div className="flex justify-between items-center p-6 border-b border-gray-700">
                 <h2 className="text-xl font-bold">Recent Measurements</h2>
-                {entries.length > 5 && (
-                  <button className="text-sm text-orange-400 hover:underline">
-                    View All
+                {entries.length > INITIAL_VISIBLE && (
+                  <button
+                    onClick={toggleViewAll}
+                    className="text-sm text-orange-400 hover:underline"
+                  >
+                    {visibleCount === INITIAL_VISIBLE ? 'View All' : 'Collapse'}
                   </button>
                 )}
               </div>
-              <div className="overflow-x-auto">
+              <div className="overflow-y-auto flex-grow">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-700">
+                    <tr className="border-b border-gray-700 sticky top-0 bg-gray-800/90 z-10">
                       <th className="p-4 text-left">Date</th>
                       <th className="p-4 text-left">Weight</th>
                       <th className="p-4 text-left">Hip</th>
@@ -213,7 +239,7 @@ const Dashboard: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {entries.slice(0, 5).map((entry, index) => (
+                    {entries.slice(0, visibleCount).map((entry, index) => (
                       <tr
                         key={index}
                         className="border-b border-gray-700 last:border-0 hover:bg-gray-700/50"
@@ -229,6 +255,18 @@ const Dashboard: React.FC = () => {
                   </tbody>
                 </table>
               </div>
+
+              {visibleCount < entries.length &&
+                visibleCount !== INITIAL_VISIBLE && (
+                  <div className="p-4 border-t border-gray-700 flex justify-center">
+                    <button
+                      onClick={loadMore}
+                      className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-600 rounded-lg hover:from-orange-600 hover:to-red-700 transition"
+                    >
+                      Load More
+                    </button>
+                  </div>
+                )}
             </div>
           </>
         )}

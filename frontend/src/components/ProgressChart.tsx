@@ -16,15 +16,15 @@ import {
 
 // Register Chart.js components
 ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    Filler
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
 );
 
 type ChartType = 'line' | 'bar';
@@ -42,17 +42,27 @@ interface Dataset {
 
 interface ProgressChartProps {
   type: ChartType;
-  data: Dataset[] | ChartDataPoint[];
+  data: ChartDataPoint[] | Dataset[];
   colors?: string[];
   yLabel?: string;
 }
 
+// Type guard for grouped dataset
+function isGroupedData(data: ChartDataPoint[] | Dataset[]): data is Dataset[] {
+  return (
+    Array.isArray(data) &&
+    data.length > 0 &&
+    typeof data[0] === 'object' &&
+    'values' in data[0]
+  );
+}
+
 const ProgressChart: React.FC<ProgressChartProps> = ({
-                                                       type,
-                                                       data,
-                                                       colors = ['#f97316', '#ef4444'],
-                                                       yLabel,
-                                                     }) => {
+  type,
+  data,
+  colors = ['#f97316', '#ef4444'],
+  yLabel,
+}) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -61,49 +71,44 @@ const ProgressChart: React.FC<ProgressChartProps> = ({
     });
   };
 
-  // Sort data by date ascending
-  const sortedData = Array.isArray(data)
-      ? 'name' in data[0]
-          ? (data as Dataset[]).map((dataset) => ({
-            ...dataset,
-            values: [...dataset.values].sort(
-                (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-            ),
-          }))
-          : [...(data as ChartDataPoint[])].sort(
-              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-          )
-      : [];
+  // Sort and prepare data
+  const sortedData = isGroupedData(data)
+    ? data.map((dataset) => ({
+        ...dataset,
+        values: [...dataset.values].sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        ),
+      }))
+    : [...data].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      );
 
+  // Format chart data
   const chartData = {
-    labels:
-        Array.isArray(sortedData) && sortedData.length > 0
-            ? 'name' in sortedData[0]
-                ? (sortedData[0] as Dataset).values.map((v) => formatDate(v.date))
-                : (sortedData as ChartDataPoint[]).map((v) => formatDate(v.date))
-            : ['No data yet'],
-    datasets:
-        Array.isArray(sortedData) && 'name' in sortedData[0]
-            ? (sortedData as Dataset[]).map((dataset, i) => ({
-              label: dataset.name,
-              data: dataset.values.map((v) => v.value),
-              backgroundColor: dataset.color || colors[i % colors.length],
-              borderColor: dataset.color || colors[i % colors.length],
-              borderWidth: 2,
-              tension: type === 'line' ? 0.3 : undefined,
-              fill: type === 'line',
-            }))
-            : [
-              {
-                label: yLabel || 'Value',
-                data: (sortedData as ChartDataPoint[]).map((d) => d.value),
-                backgroundColor: colors[0],
-                borderColor: colors[0],
-                borderWidth: 2,
-                tension: type === 'line' ? 0.3 : undefined,
-                fill: type === 'line',
-              },
-            ],
+    labels: isGroupedData(sortedData)
+      ? sortedData[0]?.values.map((v) => formatDate(v.date))
+      : sortedData.map((v) => formatDate(v.date)),
+    datasets: isGroupedData(sortedData)
+      ? sortedData.map((dataset, i) => ({
+          label: dataset.name,
+          data: dataset.values.map((v) => v.value),
+          backgroundColor: dataset.color || colors[i % colors.length],
+          borderColor: dataset.color || colors[i % colors.length],
+          borderWidth: 2,
+          tension: type === 'line' ? 0.3 : undefined,
+          fill: type === 'line',
+        }))
+      : [
+          {
+            label: yLabel || 'Value',
+            data: sortedData.map((d) => d.value),
+            backgroundColor: colors[0],
+            borderColor: colors[0],
+            borderWidth: 2,
+            tension: type === 'line' ? 0.3 : undefined,
+            fill: type === 'line',
+          },
+        ],
   };
 
   const options: ChartOptions<'line' | 'bar'> = {
@@ -116,7 +121,7 @@ const ProgressChart: React.FC<ProgressChartProps> = ({
           color: '#e5e7eb',
           font: {
             size: 14,
-            weight: 'bold' as const,
+            weight: 'bold',
           },
           padding: 20,
           usePointStyle: true,
@@ -158,13 +163,13 @@ const ProgressChart: React.FC<ProgressChartProps> = ({
   };
 
   return (
-      <div className="h-80">
-        {type === 'line' ? (
-            <Line data={chartData} options={options} />
-        ) : (
-            <Bar data={chartData} options={options} />
-        )}
-      </div>
+    <div className="h-80">
+      {type === 'line' ? (
+        <Line data={chartData} options={options} />
+      ) : (
+        <Bar data={chartData} options={options} />
+      )}
+    </div>
   );
 };
 

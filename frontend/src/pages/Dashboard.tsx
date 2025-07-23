@@ -6,7 +6,6 @@ import Header from '../components/shared/Header.tsx';
 import StatCard from '../components/shared/StatCard';
 import Modal from '../components/shared/Modal';
 
-
 interface ProgressEntry {
   date: string;
   weight: number;
@@ -132,7 +131,11 @@ const Dashboard: React.FC = () => {
         </div>
 
         {showForm && (
-          <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="Add Measurement">
+          <Modal
+            isOpen={showForm}
+            onClose={() => setShowForm(false)}
+            title="Add Measurement"
+          >
             <MeasurementForm
               onSuccess={handleNewMeasurementSuccess}
               onCancel={() => setShowForm(false)}

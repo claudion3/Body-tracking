@@ -8,11 +8,19 @@ interface ModalProps {
   maxWidthClass?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidthClass = 'max-w-md' }) => {
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  maxWidthClass = 'max-w-md',
+}) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-      <div className={`bg-gray-800 rounded-xl border border-gray-700 p-6 w-full ${maxWidthClass} relative`}>
+      <div
+        className={`bg-gray-800 rounded-xl border border-gray-700 p-6 w-full ${maxWidthClass} relative`}
+      >
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-400 hover:text-orange-400"
@@ -33,7 +41,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidt
             />
           </svg>
         </button>
-        {title && <h2 className="text-xl font-bold text-orange-400 mb-4">{title}</h2>}
+        {title && (
+          <h2 className="text-xl font-bold text-orange-400 mb-4">{title}</h2>
+        )}
         {children}
       </div>
     </div>
@@ -41,4 +51,3 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, maxWidt
 };
 
 export default Modal;
-
